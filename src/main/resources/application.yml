@@ -1,0 +1,21 @@
+server:
+  port: 8080
+
+# 百度翻译平台（api.fanyi.baidu.com）
+baidu-trans:
+  appId: "20260606002626979"
+  secretKey: "pQ4jvoQj9KxQkq1b4sOz"
+
+# 百度语音ASR平台（ai.baidu.com）
+baidu-asr:
+  appId: "123615226"
+  apiKey: "itLKspjpsTTRcbNcyoSyC7y5"
+  secretKey: "oVK12ek5U3I3pvLJxmIrWqWfI111NIWC"
+  langEn: 1737
+  langJp: 10001
+
+audio:
+  captureDeviceName: "CABLE Output"
+  sampleRate: 48000
+  sampleBit: 16
+  channel: 1
