@@ -1,9 +1,13 @@
 package com.example.aiassistant;
 
 import com.example.aiassistant.util.BaiduApiUtil;
+import javafx.scene.shape.Path;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 @SpringBootTest
 public class text {
@@ -14,28 +18,40 @@ public class text {
 
     //测试文本翻译（英译中）
     @Test
-    void testTranslate(){
+    void testTranslate() {
         String source = "Hello world";
         try {
-             String result = baiduApiUtil.translate(source, "en", "zh");
-            System.out.println("原文："+source);
-            System.out.println("译文："+result);
-        }catch (Exception e) {
+            String result = baiduApiUtil.translate(source, "en", "zh");
+            System.out.println("原文：" + source);
+            System.out.println("译文：" + result);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     //测试日语翻译
     @Test
-    void testJpToZh(){
+    void testJpToZh() {
         String source = "こんにちは";
         try {
             String result = baiduApiUtil.translate(source, "jp", "zh");
-            System.out.println("日文："+source+"\n译文："+result);
-        }catch (Exception e) {
+            System.out.println("日文：" + source + "\n译文：" + result);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    //ASR语音识别需要pcm二进制，暂时先测文本
+    @Test
+    void testAsrFile() throws Exception {
+        //读取本地pcm裸文件
+        byte[] pcm = Files.readAllBytes(Paths.get("src/main/resources/16k.pcm"));
+        //语种：zh=中文、en=英文
+        String text = baiduApiUtil.asrToText(pcm, "zh");
+        System.out.println("ASR识别结果：" + text);
+        //顺带测试翻译
+//        if(text!=null&&!text.isBlank()){
+//            String trans = baiduApiUtil.translate(text,"auto","zh");
+//            System.out.println("翻译结果："+trans);
+//        }
+    }
 }
