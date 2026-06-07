@@ -3,14 +3,14 @@ server:
 
 # 百度翻译
 baidu-trans:
-  appId: "20260606002626979"
-  secretKey: "pQ4jvoQj9KxQkq1b4sOz"
+  appId: "**************"
+  secretKey: "*************"
 
 # 百度语音ASR
 baidu-asr:
-  appId: "123615226"
-  apiKey: "itLKspjpsTTRcbNcyoSyC7y5"
-  secretKey: "oVK12ek5U3I3pvLJxmIrWqWfI111NIWC"
+  appId: "*******"
+  apiKey: "******************"
+  secretKey: "***********************"
   langEn: 1737
   langJp: 10001
 
