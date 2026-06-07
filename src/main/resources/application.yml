@@ -15,7 +15,7 @@ baidu-asr:
   langJp: 10001
 
 audio:
-  captureDeviceName: "CABLE Output"
+  captureDeviceName: "Voicemeeter In 1 (VB-Audio Voicemeeter VAIO)"
   sampleRate: 48000
   sampleBit: 16
-  channel: 1
+  channel: 2
