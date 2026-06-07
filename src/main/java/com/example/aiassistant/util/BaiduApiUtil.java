@@ -71,7 +71,6 @@ public class BaiduApiUtil {
 
             //移除：appid/rand/timestamp/sign（翻译接口字段，ASR不识别，报3300元凶）
 
-            System.out.println("ASR请求JSON：" + req);
             String res = postJson(ASR_URL, req.toString());
             JSONObject jo = JSONObject.parseObject(res);
             if (jo.getInteger("err_no") == 0) {
