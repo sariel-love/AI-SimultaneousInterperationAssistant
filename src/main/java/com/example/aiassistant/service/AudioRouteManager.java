@@ -25,7 +25,7 @@ public class AudioRouteManager {
         try {
             File script;
             if (os.contains("win")) {
-                Resource r = resLoader.getResource("classpath:script/win/route_start.bat");
+                Resource r = resLoader.getResource("classpath:script.win/route_start.bat");
                 script = new File(tmpDir, "route_start.bat");
                 try (InputStream is = r.getInputStream()) {
                     Files.copy(is, script.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -43,7 +43,7 @@ public class AudioRouteManager {
             String os = System.getProperty("os.name").toLowerCase(Locale.ROOT);
             File stop;
             if (os.contains("win")) {
-                Resource r = resLoader.getResource("classpath:script/win/route_stop.bat");
+                Resource r = resLoader.getResource("classpath:script.win/route_stop.bat");
                 stop = new File(tmpDir, "route_stop.bat");
                 // 使用 try-with-resources 并允许覆盖已存在的目标文件
                 try (InputStream is = r.getInputStream()) {

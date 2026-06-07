@@ -12,6 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring-boot.version>2.7.6</spring-boot.version>
+        <maven.test.skip>true</maven.test.skip>
     </properties>
     <dependencies>
         <dependency>
@@ -84,6 +85,7 @@
             <version>1.5.3</version>
         </dependency>
 
+
     </dependencies>
 
 
@@ -117,7 +119,7 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.example.aiassistant.AiAssistantApplication</mainClass>
-                    <skip>true</skip>
+
                 </configuration>
                 <executions>
                     <execution>

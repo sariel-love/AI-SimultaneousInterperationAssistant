@@ -22,7 +22,7 @@ public class AudioCaptureTask {
     private int targetRate;
 
     // ===================== 低延迟配置（重点可调）=====================
-    private static final int SLICE_DURATION_MS = 400;        // 单切片时长(ms)，越小延迟越低：300/400/500
+    private static final int SLICE_DURATION_MS = 800;        // 单切片时长(ms)，越小延迟越低：300/400/500
     private static final int SHORT_SILENCE_MS = 300;        // 短停顿：不截断，继续拼接
     private static final int LONG_SILENCE_MS = 600;         // 长停顿：判定句子结束，输出整句
     private static final int MAX_SPEECH_MS = 6000;          // 单句最大时长兜底

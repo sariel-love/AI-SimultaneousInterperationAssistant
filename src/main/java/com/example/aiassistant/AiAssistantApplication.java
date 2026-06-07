@@ -19,25 +19,50 @@ public class AiAssistantApplication {
     private AudioRouteManager routeMgr;
 
     public static void main(String[] args) {
+        // 图形界面强制开启，打包必备
         System.setProperty("java.awt.headless", "false");
         SpringApplication.run(AiAssistantApplication.class, args);
+        System.out.println("=== SpringBoot 服务启动完成 ===");
     }
 
     @EventListener(ApplicationReadyEvent.class)
-    public void afterStart() {
-        try {
-            // 1. 安装驱动
-            autoInstall.installAudioDriver();
-            // 2. 启动音频路由
-            routeMgr.startRoute();
-            // 3. 打开悬浮窗
-            SubtitleFloatWindow.startWindow();
+    public void afterAppReady() {
+        // 1. 单独线程执行音频驱动+路由（防止阻塞主线程）
+        new Thread(this::runAudioTask, "Audio-Task-Thread").start();
 
-            // 4. 在非静态上下文里注册关闭钩子
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+        // 2. 单独线程启动悬浮窗（沿用你能跑的原生调用）
+        new Thread(() -> {
+            try {
+                System.out.println("执行悬浮窗启动");
+                SubtitleFloatWindow.startWindow();
+            } catch (Exception e) {
+                System.err.println("悬浮窗启动异常：");
+                e.printStackTrace();
+            }
+        }, "Float-Window-Thread").start();
+
+        // 3. 注册退出钩子
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
                 routeMgr.stopRoute();
-            }));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }));
+    }
+
+    /**
+     * 音频初始化任务（独立线程，卡死/报错都不影响窗口）
+     */
+    private void runAudioTask() {
+        try {
+            System.out.println("开始安装音频驱动");
+            autoInstall.installAudioDriver();
+            System.out.println("驱动安装完成，启动音频路由");
+            routeMgr.startRoute();
+            System.out.println("音频路由启动成功");
         } catch (Exception e) {
+            System.err.println("音频初始化失败：");
             e.printStackTrace();
         }
     }
