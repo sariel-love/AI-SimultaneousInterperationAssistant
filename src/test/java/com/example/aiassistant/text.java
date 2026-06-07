@@ -44,7 +44,7 @@ public class text {
     @Test
     void testAsrFile() throws Exception {
         //读取本地pcm裸文件
-        byte[] pcm = Files.readAllBytes(Paths.get("src/main/resources/16k.pcm"));
+        byte[] pcm = Files.readAllBytes(Paths.get("src/main/resources/debug_audio_16k_mono.pcm"));
         //语种：zh=中文、en=英文
         String text = baiduApiUtil.asrToText(pcm, "zh");
         System.out.println("ASR识别结果：" + text);
