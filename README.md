@@ -4,8 +4,7 @@
 主要功能：捕获系统/麦克风音频(VB-Cable+Voicemeeter) → ASR（百度语音）→ 翻译（百度大模型文本翻译，目前主英文）→ 通过 WebSocket 推送到悬浮窗(可拖动)显示。
 
 打包后的exe链接：https://pan.quark.cn/s/cc2ffe678811?pwd=qRTH
-s视频：链接：https://pan.quark.cn/s/2fca55b0a7bd?pwd=Rsdx
-
+s视频：链接：https://www.bilibili.com/video/BV1yKEh65EZz/?share_source=copy_web&vd_source=b963df6055b03ae80036cb93140b1a2a
 主要技术栈
 - Java 8
 - Spring Boot 2.7.x
