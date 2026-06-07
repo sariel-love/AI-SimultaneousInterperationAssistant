@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.UUID;
 
 @Component
 public class BaiduApiUtil {
@@ -42,15 +43,42 @@ public class BaiduApiUtil {
     private final String TRANS_URL = "https://fanyi-api.baidu.com/ait/api/aiTextTranslate";
     private final String TOKEN_URL = "https://aip.baidubce.com/oauth/2.0/token";
 
-    //缓存token
+    // 缓存Token + 过期时间（新增：自动续期）
     private String accessToken;
+    private long tokenExpireTime = 0;
+    // 全局固定设备ID（流式ASR必需，全局唯一）
+    private static final String CUID = UUID.randomUUID().toString().replace("-", "");
 
-    //语音识别：【按百度官方短语音JSON规范重构】
+    // ===================== 新增：流式ASR对外接口方法 =====================
+    public String getAsrAppId() {
+        return asrAppId;
+    }
+
+    public String getCuid() {
+        return CUID;
+    }
+
+    public String getAccessToken() {
+        // Token 过期自动重新获取
+        if (System.currentTimeMillis() > tokenExpireTime || accessToken == null || accessToken.isEmpty()) {
+            try {
+                refreshAsrToken();
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "";
+            }
+        }
+        return accessToken;
+    }
+    // =====================================================================
+
+    //语音识别：【按百度官方短语音JSON规范重构】（原有逻辑完全保留）
     public String asrToText(byte[] pcm, String langType) {
         try {
-            //token为空则获取
-            if (accessToken == null || accessToken.isEmpty()) {
-                accessToken = getAsrAccessToken();
+            //token为空/过期则刷新
+            accessToken = getAccessToken();
+            if (accessToken.isEmpty()) {
+                return "Token获取失败";
             }
             String base64 = Base64.getEncoder().encodeToString(pcm);
             int len = pcm.length;
@@ -63,13 +91,11 @@ public class BaiduApiUtil {
             req.put("format", "pcm");
             req.put("rate", 16000);
             req.put("channel", 1);
-            req.put("cuid", "trans123");
+            req.put("cuid", CUID);
             req.put("token", accessToken);
             req.put("len", len);
             req.put("speech", base64);
             req.put("dev_pid", devPid);
-
-            //移除：appid/rand/timestamp/sign（翻译接口字段，ASR不识别，报3300元凶）
 
             String res = postJson(ASR_URL, req.toString());
             JSONObject jo = JSONObject.parseObject(res);
@@ -81,6 +107,7 @@ public class BaiduApiUtil {
                 //token失效清空，下次重新拉取
                 if ("invalid token".equalsIgnoreCase(errMsg)) {
                     accessToken = null;
+                    tokenExpireTime = 0;
                 }
                 return errMsg;
             }
@@ -90,15 +117,18 @@ public class BaiduApiUtil {
         }
     }
 
-    //获取百度AIP access_token（ASR鉴权用，有效期30天）
-    private String getAsrAccessToken() throws Exception {
+    // 获取并缓存Token + 记录过期时间（改造原有方法，增加过期逻辑）
+    private void refreshAsrToken() throws Exception {
         String url = TOKEN_URL + "?grant_type=client_credentials&client_id=" + asrApiKey + "&client_secret=" + asrSecret;
         try (CloseableHttpClient http = HttpClients.createDefault()) {
             HttpGet get = new HttpGet(url);
             CloseableHttpResponse resp = http.execute(get);
             String body = EntityUtils.toString(resp.getEntity(), StandardCharsets.UTF_8);
             JSONObject json = JSON.parseObject(body);
-            return json.getString("access_token");
+            accessToken = json.getString("access_token");
+            long expiresIn = json.getLongValue("expires_in");
+            // 提前60秒判定过期，避免临界失效
+            tokenExpireTime = System.currentTimeMillis() + (expiresIn - 60) * 1000;
         }
     }
 
@@ -131,7 +161,7 @@ public class BaiduApiUtil {
         }
     }
 
-    //POST-JSON通用
+    //POST-JSON通用（原有逻辑保留）
     private String postJson(String url, String json) throws Exception {
         HttpPost post = new HttpPost(url);
         post.setHeader("Content-Type", "application/json");
