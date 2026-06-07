@@ -9,26 +9,36 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 
-import javax.annotation.Resource;
-
 @SpringBootApplication
 public class AiAssistantApplication {
-//    @Resource
-//     static  AudioAutoInstall autoInstall;
-//    @Resource
-//     static AudioRouteManager routeMgr;
+
+    @Autowired
+    private AudioAutoInstall autoInstall;
+
+    @Autowired
+    private AudioRouteManager routeMgr;
 
     public static void main(String[] args) {
-        // 启动优先：自动装驱动→自动配置音频分流
-//        autoInstall.installAudioDriver();
-//        routeMgr.startRoute();
         System.setProperty("java.awt.headless", "false");
         SpringApplication.run(AiAssistantApplication.class, args);
-        // 关闭钩子，退出还原声卡配置
-//        Runtime.getRuntime().addShutdownHook(new Thread(routeMgr::stopRoute));
     }
+
     @EventListener(ApplicationReadyEvent.class)
-    public void openFloatWindow() {
-        SubtitleFloatWindow.startWindow();
+    public void afterStart() {
+        try {
+            // 1. 安装驱动
+            autoInstall.installAudioDriver();
+            // 2. 启动音频路由
+            routeMgr.startRoute();
+            // 3. 打开悬浮窗
+            SubtitleFloatWindow.startWindow();
+
+            // 4. 在非静态上下文里注册关闭钩子
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                routeMgr.stopRoute();
+            }));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
