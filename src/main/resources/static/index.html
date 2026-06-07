@@ -22,13 +22,11 @@
     let subDom = document.getElementById("sub");
     const wsUrl = `ws://localhost:8080/trans/ws`;
 
-    // 初始化连接
     function initWs() {
         ws = new WebSocket(wsUrl);
 
         ws.onopen = function() {
             subDom.innerText = "连接成功";
-            // 连接成功立即发送默认选中语言
             ws.send(sel.value);
         };
 
@@ -38,7 +36,6 @@
 
         ws.onclose = function() {
             subDom.innerText = "连接断开，正在重连...";
-            // 3秒后自动重连
             setTimeout(initWs, 3000);
         };
 
@@ -47,14 +44,12 @@
         };
     }
 
-    // 下拉切换发送语言
     sel.onchange = () => {
         if(ws && ws.readyState === WebSocket.OPEN){
             ws.send(sel.value);
         }
     };
 
-    // 启动连接
     initWs();
 </script>
 </body>

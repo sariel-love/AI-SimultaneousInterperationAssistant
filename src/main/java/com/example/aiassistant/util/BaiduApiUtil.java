@@ -46,17 +46,10 @@ public class BaiduApiUtil {
     // 缓存Token + 过期时间（新增：自动续期）
     private String accessToken;
     private long tokenExpireTime = 0;
-    // 全局固定设备ID（流式ASR必需，全局唯一）
+    // 全局固定设备ID
     private static final String CUID = UUID.randomUUID().toString().replace("-", "");
 
-    // ===================== 新增：流式ASR对外接口方法 =====================
-    public String getAsrAppId() {
-        return asrAppId;
-    }
 
-    public String getCuid() {
-        return CUID;
-    }
 
     public String getAccessToken() {
         // Token 过期自动重新获取
@@ -70,9 +63,8 @@ public class BaiduApiUtil {
         }
         return accessToken;
     }
-    // =====================================================================
 
-    //语音识别：【按百度官方短语音JSON规范重构】（原有逻辑完全保留）
+    //语音识别
     public String asrToText(byte[] pcm, String langType) {
         try {
             //token为空/过期则刷新
@@ -83,11 +75,9 @@ public class BaiduApiUtil {
             String base64 = Base64.getEncoder().encodeToString(pcm);
             int len = pcm.length;
 
-            //语种dev_pid：1537中文、1737英文，百度原生无日语短语音
             int devPid = "en".equals(langType) ? enLang : 1537;
 
             JSONObject req = new JSONObject();
-            //===== 百度ASR JSON必填字段【关键修复：补format、channel】=====
             req.put("format", "pcm");
             req.put("rate", 16000);
             req.put("channel", 1);
@@ -132,7 +122,7 @@ public class BaiduApiUtil {
         }
     }
 
-    //文本翻译：原有逻辑不动（翻译保留appid+sign规则，不受ASR影响）
+    //文本翻译
     public String translate(String q, String from, String to) throws Exception {
         String salt = String.valueOf(System.currentTimeMillis());
         String sourceSign = transAppId + q + salt + transSecret;
