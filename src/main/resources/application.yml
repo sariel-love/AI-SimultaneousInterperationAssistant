@@ -1,12 +1,12 @@
 server:
   port: 8080
 
-# 百度翻译平台（api.fanyi.baidu.com）
+# 百度翻译
 baidu-trans:
   appId: "20260606002626979"
   secretKey: "pQ4jvoQj9KxQkq1b4sOz"
 
-# 百度语音ASR平台（ai.baidu.com）
+# 百度语音ASR
 baidu-asr:
   appId: "123615226"
   apiKey: "itLKspjpsTTRcbNcyoSyC7y5"

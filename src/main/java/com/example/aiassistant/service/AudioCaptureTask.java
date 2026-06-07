@@ -45,7 +45,7 @@ public class AudioCaptureTask {
         Thread t = new Thread(this::captureLoop, "Audio-Capture-LowDelay");
         t.setDaemon(true);
         t.start();
-        logger.info("低延迟音频采集启动，切片{}ms，长停顿{}ms输出整句", SLICE_DURATION_MS, LONG_SILENCE_MS);
+        logger.info("音频采集启动，切片{}ms，长停顿{}ms输出整句", SLICE_DURATION_MS, LONG_SILENCE_MS);
     }
 
     @PreDestroy
@@ -82,7 +82,7 @@ public class AudioCaptureTask {
                 sliceBuf.write(buffer, 0, len);
                 long now = System.currentTimeMillis();
 
-                // 切片攒够，处理当前片段
+                // 切片攒够，-8处理当前片段
                 if (sliceBuf.size() >= sliceBytes) {
                     byte[] sliceData = sliceBuf.toByteArray();
                     sliceBuf.reset();
@@ -166,7 +166,7 @@ public class AudioCaptureTask {
         logger.info("已打开设备：{}", selected.getName());
     }
 
-    // 处理完整一句话：转码 + ASR + 翻译 + 推送
+    // 转码 + ASR + 翻译 + 推送
     private void processWholeSentence(AudioFormat format) {
         if (sessionBuf.size() < 100) {
             sessionBuf.reset();

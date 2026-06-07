@@ -19,7 +19,7 @@ public class AiAssistantApplication {
     private AudioRouteManager routeMgr;
 
     public static void main(String[] args) {
-        // 图形界面强制开启，打包必备
+
         System.setProperty("java.awt.headless", "false");
         SpringApplication.run(AiAssistantApplication.class, args);
         System.out.println("=== SpringBoot 服务启动完成 ===");
@@ -30,7 +30,7 @@ public class AiAssistantApplication {
         // 1. 单独线程执行音频驱动+路由（防止阻塞主线程）
         new Thread(this::runAudioTask, "Audio-Task-Thread").start();
 
-        // 2. 单独线程启动悬浮窗（沿用你能跑的原生调用）
+        // 2. 单独线程启动悬浮窗
         new Thread(() -> {
             try {
                 System.out.println("执行悬浮窗启动");

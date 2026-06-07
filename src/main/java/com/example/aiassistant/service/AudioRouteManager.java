@@ -25,7 +25,8 @@ public class AudioRouteManager {
         try {
             File script;
             if (os.contains("win")) {
-                Resource r = resLoader.getResource("classpath:script.win/route_start.bat");
+                Resource r = resLoader.getResource("classpath:script." +
+                        "win/route_start.bat");
                 script = new File(tmpDir, "route_start.bat");
                 try (InputStream is = r.getInputStream()) {
                     Files.copy(is, script.toPath(), StandardCopyOption.REPLACE_EXISTING);
