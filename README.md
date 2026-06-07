@@ -3,7 +3,7 @@
 一个基于 Spring Boot 的桌面语音识别 + 翻译 + 实时字幕悬浮窗工具（Windows 为主）。  
 主要功能：捕获系统/麦克风音频 → ASR（百度语音）→ 翻译（百度大模型文本翻译）→ 通过 WebSocket 推送到悬浮窗显示。
 
-exe链接：https://pan.quark.cn/s/cc2ffe678811?pwd=qRTH
+打包后的exe链接：https://pan.quark.cn/s/cc2ffe678811?pwd=qRTH
 
 
 主要技术栈
